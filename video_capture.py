@@ -3,10 +3,11 @@ import glob
 from datetime import datetime
 import os
 import sys
+import time
 
 
-# unit: Gigabytes
-VIDEO_CAPTURE_SIZE = 3
+# unit: Gigabytes, normally it is < 3 GB, but considering space for converting is around 4 GB, 5 GB is better
+VIDEO_CAPTURE_SIZE = 5
 CAPTURES_DIR = "/home/pi/workspace/"
 CAPTURES_FORMAT = ".h264"
 CAPTURES_REGEX = CAPTURES_DIR + "*" + CAPTURES_FORMAT
@@ -50,11 +51,27 @@ if __name__ == '__main__':
 		except OSError:
 			sys.exit(1)
 		
-	# Create 1 hour video capture if space is not full now
-	if not is_space_full():
-		output_name = CAPTURES_DIR + datetime.now().strftime(VIDEO_FILE_NAME_FORMAT) + CAPTURES_FORMAT
-		capture(output_name, duration=2000)
-	
+	# Set a max retry limit as 5 times, and try after each 1 min, since it is run byt crontab hourly and raspberry pi camera can be inaccessible state when next script is executed but last script has not finished
+	# Calculate elapsed time to be at least 30 mins, since normally we set duration as 1 hour
+	times = 5
+	while times > 0:
+		start = int(time.time())
+
+		# Create 1 hour video capture if space is not full now
+		if not is_space_full():
+			output_name = CAPTURES_DIR + datetime.now().strftime(VIDEO_FILE_NAME_FORMAT) + CAPTURES_FORMAT
+			capture(output_name, duration=1800000)
+
+		elapsed = int(time.time()) - start
+		print elapsed
+		if elapsed > 60 * 5:
+			# Successful run, exit now
+			break
+		else:
+			# Not successful attempt, sleep 1 min and retry again
+			time.sleep(60)
+			times -= 1
+
 	print "finally"
 		
 
