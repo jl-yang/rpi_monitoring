@@ -7,7 +7,7 @@ import time
 
 
 # unit: Gigabytes, normally it is < 3 GB, but considering space for converting is around 4 GB, 5 GB is better
-VIDEO_CAPTURE_SIZE = 5
+VIDEO_CAPTURE_SIZE = 1
 CAPTURES_DIR = "/home/pi/workspace/"
 CAPTURES_FORMAT = ".h264"
 CAPTURES_REGEX = CAPTURES_DIR + "*" + CAPTURES_FORMAT
@@ -25,7 +25,7 @@ def is_space_full():
 # default duration is 1 hour = 60 * 60 * 1000 ms
 def capture(output_name, duration=3600000):
 	# no preview
-	output = Popen(["raspivid", "-o", output_name, "-t", str(duration), "-n"], stdout=PIPE).communicate()[0]
+	output = Popen(["raspivid", "-o", output_name, "-t", str(duration), "-n", "-w", "1280", "-h", "720"], stdout=PIPE).communicate()[0]
 	return output
 
 

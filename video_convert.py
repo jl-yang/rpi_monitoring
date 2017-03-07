@@ -7,7 +7,7 @@ import sys
 
 # unit: Gigabytes, 3 GB is good to place a new converted video, waiting for output script to write to external usb drive and remove
 # For capture script, threshold is 5 GB so that if space is not enough, priority will be converting script in order to convert and possibly empty space for further capturing
-VIDEO_CAPTURE_SIZE = 3
+VIDEO_CAPTURE_SIZE = 1
 CAPTURES_DIR = "/home/pi/workspace/"
 CAPTURES_FORMAT = ".h264"
 OUTPUT_FORMAT = ".mp4"
@@ -54,11 +54,23 @@ if __name__ == '__main__':
 			# Check if corresponding converted file exists, if yes, then remove such entry and check next min date
 			if glob.glob(output_name):
 				dates.remove(to_be_converted)
+
+				try:
+					os.remove(input_name)
+				except OSError as e:
+					print "unable to delete"
+
 				continue
+
 			else:
 				# actual conversion
 				convert(input_name, output_name)
-				
+			
+				try:
+					os.remove(input_name)
+				except OSError as e:
+					print "unable to delete"				
+	
 				# must exit now since we need space waiting for new captures, and cannot process that fast until output script moves converted videos out
 				sys.exit()
 	
