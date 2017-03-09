@@ -30,6 +30,8 @@ def capture(output_name, duration=3600000):
 
 
 if __name__ == '__main__':
+	initial = int(time.time())	
+
 	# Check if sd card space almost full
 	# Remove earliest video file if full
 	if is_space_full():
@@ -57,10 +59,10 @@ if __name__ == '__main__':
 	while times > 0:
 		start = int(time.time())
 
-		# Create 1 hour video capture if space is not full now
+		# Create less than half hour video capture if space is not full now
 		if not is_space_full():
 			output_name = CAPTURES_DIR + datetime.now().strftime(VIDEO_FILE_NAME_FORMAT) + CAPTURES_FORMAT
-			capture(output_name, duration=1800000)
+			capture(output_name, duration=1800000 - (start - initial) * 1000)
 
 		elapsed = int(time.time()) - start
 		print elapsed
