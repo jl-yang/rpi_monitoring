@@ -10,6 +10,7 @@ from shutil import copyfile
 CAPACITY = 1
 CAPTURES_DIR = "/home/pi/workspace/"
 OUTPUT_FORMAT = ".mp4"
+RAW_FORMAT = ".h264"
 OUTPUT_REGEX = CAPTURES_DIR + "*" + OUTPUT_FORMAT
 VIDEO_FILE_NAME_FORMAT = "%Y-%m-%d_%H-%M-%S"
 
@@ -47,8 +48,10 @@ if __name__ == '__main__':
 
 		# Remove earliest video file in usb drive
 		to_be_deleted = CAPTURES_DIR + min(dates).strftime(VIDEO_FILE_NAME_FORMAT) + OUTPUT_FORMAT
+		raw_deleted = CAPTURES_DIR + min(dates).strftime(VIDEO_FILE_NAME_FORMAT) + RAW_FORMAT
 		try:
 			os.remove(to_be_deleted)
+			os.remove(raw_deleted)
 		except OSError:
 			sys.exit(1)
 
