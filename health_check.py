@@ -17,7 +17,7 @@ VIDEO_FILE_NAME_FORMAT = "%Y-%m-%d_%H-%M-%S"
 def is_space_full(capacity_limit, path="/"):
 	output = Popen(["df", "-H", path], stdout=PIPE).communicate()[0]
 	device, size, used, available, percent, mountpoint = output.split("\n")[1].split()
-	if int(float(available.split("G")[0])) <= capacity_limit:
+	if float(available.split("G")[0]) <= capacity_limit:
 		return True
 	else:
 		return False
