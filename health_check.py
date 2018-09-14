@@ -29,10 +29,6 @@ def convert(input_name, output_name):
 	return output
 
 
-def is_mounted():
-	return os.path.ismount(USB_DRIVE_MOUNT_POINT)
-
-
 if __name__ == '__main__':
 	# Check usb drive is not full, remove earliest file if full
 	if is_space_full(CAPACITY):			

@@ -25,7 +25,7 @@ def is_space_full():
 # default duration is 1 hour = 60 * 60 * 1000 ms
 def capture(output_name, duration=3600000):
 	# no preview
-	output = Popen(["raspivid", "-o", output_name, "-t", str(duration), "-n", "-w", "1280", "-h", "720"], stdout=PIPE).communicate()[0]
+	output = Popen(["raspivid", "-o", output_name, "-t", str(duration), "-w", "1280", "-h", "720"], stdout=PIPE).communicate()[0]
 	return output
 
 
