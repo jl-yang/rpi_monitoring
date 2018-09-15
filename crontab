@@ -1,0 +1,3 @@
+video_capture: run every 2 seconds
+video_convert: run every 1 hour
+health_check: run every 30 min

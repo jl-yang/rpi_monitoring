@@ -53,8 +53,7 @@ if __name__ == '__main__':
 		except OSError:
 			sys.exit(1)
 		
-	# Set a max retry limit as 5 times, and try after each 1 min, since it is run byt crontab hourly and raspberry pi camera can be inaccessible state when next script is executed but last script has not finished
-	# Calculate elapsed time to be at least 30 mins, since normally we set duration as 1 hour
+	# retry 5 times until space is not full or no capture done
 	times = 5
 	while times > 0:
 		start = int(time.time())
@@ -62,16 +61,16 @@ if __name__ == '__main__':
 		# Create less than half hour video capture if space is not full now
 		if not is_space_full():
 			output_name = CAPTURES_DIR + datetime.now().strftime(VIDEO_FILE_NAME_FORMAT) + CAPTURES_FORMAT
-			capture(output_name, duration=1800000 - (start - initial) * 1000)
+			capture(output_name, duration=1000 * 60 * 2)
 
 		elapsed = int(time.time()) - start
 		print elapsed
-		if elapsed > 60 * 5:
+		if elapsed > 60:
 			# Successful run, exit now
 			break
 		else:
-			# Not successful attempt, sleep 1 min and retry again
-			time.sleep(60)
+			# Not successful attempt, sleep 1 sec and retry again
+                        time.sleep(1)
 			times -= 1
 
 	print "finally"
