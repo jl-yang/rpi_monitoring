@@ -3,6 +3,7 @@ import glob
 from datetime import datetime
 import os
 import sys
+import time
 
 
 # unit: Gigabytes, 3 GB is good to place a new converted video, waiting for output script to write to external usb drive and remove
@@ -25,11 +26,11 @@ def is_space_full():
 
 
 def convert(input_name, output_name):
-	output = Popen(["MP4Box", "-add", input_name, output_name], stdout=PIPE).communicate()[0]
+	output = Popen(["MP4Box", "-fps", "5", "-add", input_name, output_name], stdout=PIPE).communicate()[0]
 	return output
 
 
-if __name__ == '__main__':
+while True:
 	# Check if sd card space almost full
 	# Remove earliest video file if full
 	if not is_space_full():
@@ -43,7 +44,7 @@ if __name__ == '__main__':
 
 		# Something is wrong, cannot find any to be converted video file
 		if not dates:
-			sys.exit(1)
+		    continue
 		
 		# Check if any video is in need of conversion, starting from earliest one
 		while len(dates) > 0:
@@ -72,8 +73,9 @@ if __name__ == '__main__':
 					print "unable to delete"				
 	
 				# must exit now since we need space waiting for new captures, and cannot process that fast until output script moves converted videos out
-				sys.exit()
+				time.sleep(60)
 	
-	print "finally"
+        print("next loop\n")
+        time.sleep(5)
 		
 

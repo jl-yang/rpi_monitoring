@@ -25,7 +25,7 @@ def is_space_full():
 # default duration is 1 hour = 60 * 60 * 1000 ms
 def capture(output_name, duration=3600000):
 	# no preview
-	output = Popen(["raspivid", "-o", output_name, "-t", str(duration), "-w", "1280", "-h", "720"], stdout=PIPE).communicate()[0]
+	output = Popen(["raspivid", "-fps", "5", "-o", output_name, "-t", str(duration), "-w", "1280", "-h", "720"], stdout=PIPE).communicate()[0]
 	return output
 
 
@@ -53,25 +53,22 @@ if __name__ == '__main__':
 		except OSError:
 			sys.exit(1)
 		
-	# retry 5 times until space is not full or no capture done
-	times = 5
-	while times > 0:
+	while True:
 		start = int(time.time())
 
 		# Create less than half hour video capture if space is not full now
 		if not is_space_full():
 			output_name = CAPTURES_DIR + datetime.now().strftime(VIDEO_FILE_NAME_FORMAT) + CAPTURES_FORMAT
-			capture(output_name, duration=1000 * 60 * 2)
+			capture(output_name)
 
 		elapsed = int(time.time()) - start
 		print elapsed
 		if elapsed > 60:
-			# Successful run, exit now
-			break
+			# Successful run, continue
+                        continue
 		else:
 			# Not successful attempt, sleep 1 sec and retry again
                         time.sleep(1)
-			times -= 1
 
 	print "finally"
 		
